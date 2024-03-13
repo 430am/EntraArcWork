@@ -1,6 +1,6 @@
 ## Entra ID SSH authentication workspace
 
-This repo is a workspace for doing the following:
+This repo is my workspace for doing the following:
 
 1. Learn how to use cloud-init in terraform to make last mile configuration changes to cloud images in Azure, AWS, and GCP.
 2. Learn how to automate Arc-enabling VMs in AWS and GCP with Ansible
