@@ -1,3 +1,9 @@
+provider "azurerm" {
+  features {
+    
+  }
+}
+
 resource "random_id" "random_id" {
   byte_length = 8
 }
@@ -34,18 +40,20 @@ resource "azurerm_network_security_group" "azureNSG" {
   name = "nsg-sshallow"
   location = azurerm_resource_group.azureRG.location
   resource_group_name = azurerm_resource_group.azureRG.name
+}
 
-  security_rule = { 
-    name = "SSH"
-    priority = 1001
-    direction = "Inbound"
-    access = "Allow"
-    protocol = "Tcp"
-    source_port_range = "*"
-    destination_port_range = "*"
-    source_address_prefix = "*"
-    destination_address_prefix = "*"
-   }
+resource "azurerm_network_security_rule" "azureNSRule" {
+  name = "nsrule-ssh"
+  priority = 1001
+  direction = "Inbound"
+  access = "Allow"
+  protocol = "Tcp"
+  source_port_range = "*"
+  destination_port_range = "*"
+  source_address_prefix = "*"
+  destination_address_prefix = "*"
+  resource_group_name = azurerm_resource_group.azureRG.name
+  network_security_group_name = azurerm_network_security_group.azureNSG.name
 }
 
 resource "azurerm_network_interface" "azureVMNIC" {
@@ -74,7 +82,18 @@ resource "azurerm_storage_account" "azureBootDiagsStore" {
 }
 
 data "template_file" "user_data" {
-  template = file("/scripts/user_data.tmpl")
+  template = file("./scripts/user_data.tmpl")
+}
+
+data "template_cloudinit_config" "cloud_config" {
+  gzip = true
+  base64_encode = true
+
+  part {
+    filename = "cloud.cfg"
+    content_type = "text/cloud-config"
+    content = "${data.template_file.user_data.rendered}"
+  }
 }
 
 resource "azurerm_linux_virtual_machine" "azureVM" {
@@ -98,9 +117,25 @@ resource "azurerm_linux_virtual_machine" "azureVM" {
   }
 
   admin_username = "ladmin"
-  user_data = data.template_file.user_data.rendered
+
+  admin_ssh_key {
+    username = "ladmin"
+    public_key = file("~/.ssh/id_rsa.pub")
+  }
+
+  user_data = "${data.template_cloudinit_config.cloud_config.rendered}"
   
   boot_diagnostics {
     storage_account_uri = azurerm_storage_account.azureBootDiagsStore.primary_blob_endpoint
   }
+}
+
+output "vm_ip" {
+  value = azurerm_linux_virtual_machine.azureVM.public_ip_address
+}
+
+resource "azurerm_role_assignment" "azureVMAdminLogin" {
+  scope = azurerm_resource_group.azureRG.id
+  role_definition_name = "Virtual Machine Administrator Login"
+  
 }
