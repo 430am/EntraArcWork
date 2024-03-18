@@ -61,7 +61,7 @@ resource "azurerm_network_interface" "azureVMNIC" {
   location = azurerm_resource_group.azureRG.location
   resource_group_name = azurerm_resource_group.azureRG.name
   ip_configuration {
-    name = "nic-vm_configuration"
+    name = "nic-vm_config"
     subnet_id = azurerm_subnet.azureSubnet1.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id = azurerm_public_ip.azurePublicIP.id
@@ -128,14 +128,4 @@ resource "azurerm_linux_virtual_machine" "azureVM" {
   boot_diagnostics {
     storage_account_uri = azurerm_storage_account.azureBootDiagsStore.primary_blob_endpoint
   }
-}
-
-output "vm_ip" {
-  value = azurerm_linux_virtual_machine.azureVM.public_ip_address
-}
-
-resource "azurerm_role_assignment" "azureVMAdminLogin" {
-  scope = azurerm_resource_group.azureRG.id
-  role_definition_name = "Virtual Machine Administrator Login"
-  
 }

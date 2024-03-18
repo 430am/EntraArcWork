@@ -1,0 +1,25 @@
+#cloud-config
+preserve_hostname: true
+groups:
+  - admingroup: [root,sys]
+
+users:
+  - default
+  - name: ladmin
+    gecos: Local Admin
+    groups: users,admin,wheel
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    lock_passwd: true
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDLRrwiW7JK6n07Nh7Monc0b93eW7oL5tNEfhWlamb1geaJM/qOkd3JxA7Z82R80RRV12R2M5x7O/AFpwY1iKXL6K0DJ0eKuBUHcdRINIkDEDdJ5MlszimsORV2vodylqidgM6AjJjP8H9hdbaiTOCwIB4wJA2bpTKf4Ky46SGbuQJ0a8BM4KUMBsh3XmAo4RVgD2j0WKqukh5JKernY4Is/RtwoJfZeJKy+m1jvhZ+qCDbDzNBUEr8r1j4GDxH5VjQIu/7sWyslmph2SPowpLWVIqaoqKXbLAWKNFlu2Hbc41Xyg6cD6Az4sKC1gv6V9kD0+jZZf4iUqXKTsp7Yy4t jackw@kickinchickin
+
+ssh_keys:
+  rsa_private: |
+    
+  
+  rsa_public: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDLRrwiW7JK6n07Nh7Monc0b93eW7oL5tNEfhWlamb1geaJM/qOkd3JxA7Z82R80RRV12R2M5x7O/AFpwY1iKXL6K0DJ0eKuBUHcdRINIkDEDdJ5MlszimsORV2vodylqidgM6AjJjP8H9hdbaiTOCwIB4wJA2bpTKf4Ky46SGbuQJ0a8BM4KUMBsh3XmAo4RVgD2j0WKqukh5JKernY4Is/RtwoJfZeJKy+m1jvhZ+qCDbDzNBUEr8r1j4GDxH5VjQIu/7sWyslmph2SPowpLWVIqaoqKXbLAWKNFlu2Hbc41Xyg6cD6Az4sKC1gv6V9kD0+jZZf4iUqXKTsp7Yy4t jackw@kickinchickin
+
+no_ssh_fingerprints: true
+ssh:
+  emit_keys_to_console: false
